@@ -12,9 +12,9 @@ const Container = styled.div`
 
 interface Props {
     title: string;
-    selected: any;
+    selected: any; // leave any type for reusable other data object
     dataKey: string;
-    data: any[];
+    data: any[]; // leave any type for reusable other data object
     onChange:(value: string) => void;
 }
 

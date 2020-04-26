@@ -41,7 +41,7 @@ const SpeciesComponent: FunctionComponent<Props> = ({loading, speciesList, peopl
     }, [speciesList, getSpeciesList]);
 
     const handleChange = useCallback((value) => {
-        const selected = speciesList.find((species: SpeciesInterface)=>species.name===value);
+        const selected: SpeciesInterface | undefined = speciesList.find((species: SpeciesInterface)=>species.name===value);
         if(selected){
             setSpecies(selected);
         }        
