@@ -1,27 +1,76 @@
-import React, {FunctionComponent,  useEffect, useCallback } from 'react';
+import React, { FunctionComponent,  useEffect, useCallback } from 'react';
 import _ from 'lodash';
-import { Species as SpeciesInterface } from "../interfaces";
+import { Paper, makeStyles } from '@material-ui/core';
+import styled from 'styled-components';
+
+import { Species as SpeciesInterface, SpeciesPeople as SpeciesPeopleInterface } from "../interfaces";
+import Loading from '../components/Loading';
+import Dropdown from '../components/Dropdown';
+import SpeciesChart from '../components/SpeciesChart';
+
+const useStyles = makeStyles((theme) => ({
+    form: {
+        margin: theme.spacing(2),
+        padding: theme.spacing(2),
+    }
+}));
+
+const Header = styled.div`
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    padding: 10px;
+`;
 
 interface Props {
     speciesList: SpeciesInterface[];
-    peopleList: any[];
+    peopleList: SpeciesPeopleInterface[];
     selectedSpecies?: SpeciesInterface;
     getSpeciesList(): void;
-    setSpecies(species: any): void;
+    setSpecies(species: SpeciesInterface): void;
     loading: boolean;
 }
 
-const SpeciesComponent: FunctionComponent<Props> = ({
-    loading, speciesList, peopleList, selectedSpecies, getSpeciesList, setSpecies}) => {
+const SpeciesComponent: FunctionComponent<Props> = ({loading, speciesList, peopleList, selectedSpecies, getSpeciesList, setSpecies}) => {
+    const classes = useStyles();
+
     useEffect(() => {
         if (speciesList.length === 0){
             getSpeciesList();
         }
     }, [speciesList, getSpeciesList]);
-    console.log(speciesList, selectedSpecies, peopleList)
+
+    const handleChange = useCallback((value) => {
+        const selected = speciesList.find((species: SpeciesInterface)=>species.name===value);
+        if(selected){
+            setSpecies(selected);
+        }        
+    }, [speciesList, setSpecies]);
+    
     return (
         <>
-            <div>species</div>
+            {loading && 
+                <Loading />
+            }
+            <Paper className={classes.form}>
+                <Header>
+                    Star Wars Universe 
+                </Header>
+                <Dropdown 
+                    title={'Pick a species'}
+                    data={speciesList}
+                    dataKey={'name'}
+                    selected={selectedSpecies}
+                    onChange={handleChange} 
+                />
+                <SpeciesChart 
+                    data={peopleList}
+                    xAxis={'height'}
+                    yAxis={'mass'}
+                    label={'name'}
+                    miscLabel={'gender'}
+                />
+            </Paper>
         </>
     );
 };
